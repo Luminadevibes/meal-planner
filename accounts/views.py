@@ -49,7 +49,10 @@ def profile_setup_view(request):
 
 @login_required
 def dashboard_view(request):
-    profile = request.user.profile
+    profile = Profile.objects.filter(user=request.user).first()
+    if profile is None:
+        return redirect('profile_setup')
+
     latest_plan = MealPlan.objects.filter(profile=profile).order_by('-created_at').first()
     analysis = run_expert_system(profile)
 
@@ -62,14 +65,20 @@ def dashboard_view(request):
 
 @login_required
 def generate_plan_view(request):
-    profile = request.user.profile
+    profile = Profile.objects.filter(user=request.user).first()
+    if profile is None:
+        return redirect('profile_setup')
+
     generate_meal_plan(profile)
     return redirect('dashboard')
 
 
 @login_required
 def shopping_list_view(request):
-    profile = request.user.profile
+    profile = Profile.objects.filter(user=request.user).first()
+    if profile is None:
+        return redirect('profile_setup')
+
     latest_plan = MealPlan.objects.filter(profile=profile).order_by('-created_at').first()
 
     if not latest_plan:

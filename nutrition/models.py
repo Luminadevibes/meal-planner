@@ -18,7 +18,7 @@ class Ingredient(models.Model):
     is_seasonal = models.BooleanField(default=False)
     season = models.CharField(max_length=20, blank=True, help_text="e.g. harmattan, rainy, all year")
 
-    def str(self):
+    def __str__(self):
         return self.name
 
 
@@ -76,7 +76,7 @@ class Dish(models.Model):
 
     ingredients = models.ManyToManyField(Ingredient, through='DishIngredient')
 
-    def str(self):
+    def __str__(self):
         return self.name
 
     def average_rating(self):
@@ -93,7 +93,7 @@ class DishIngredient(models.Model):
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     quantity = models.CharField(max_length=50, help_text="e.g. '2 cups', '100g', '1 medium'")
 
-    def str(self):
+    def __str__(self):
         return f"{self.quantity} {self.ingredient.name} for {self.dish.name}"
 
 
@@ -107,7 +107,7 @@ class MealPlan(models.Model):
     daily_carb_target = models.PositiveIntegerField()
     daily_fat_target = models.PositiveIntegerField()
 
-    def str(self):
+    def __str__(self):
         return f"MealPlan for {self.profile.user.username} ({self.created_at.date()})"
 
 
@@ -120,7 +120,7 @@ class MealPlanEntry(models.Model):
     day_number = models.PositiveSmallIntegerField(choices=DAY_CHOICES)
     meal_type = models.CharField(max_length=10, choices=Dish.MEAL_TYPE_CHOICES)
 
-    def str(self):
+    def __str__(self):
         return f"Day {self.day_number} {self.meal_type}: {self.dish.name}"
 
 
@@ -135,6 +135,6 @@ class Rating(models.Model):
     class Meta:
         unique_together = ('user', 'dish')  # one rating per user per dish, re-rating updates it
 
-    def str(self):
+    def __str__(self):
         return f"{self.user.username} rated {self.dish.name}: {self.stars} stars"
 # Create your models here.
